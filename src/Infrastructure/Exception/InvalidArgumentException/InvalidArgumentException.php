@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Bundles\InfrastructureBundle\Infrastructure\Exception\InvalidArgumentException;
+
+use App\Bundles\InfrastructureBundle\Infrastructure\Exception\DefaultException;
+use App\Bundles\InfrastructureBundle\Infrastructure\Exception\ExceptionInterface\InvalidArgumentException\InvalidArgumentExceptionInterface;
+
+class InvalidArgumentException extends DefaultException implements InvalidArgumentExceptionInterface
+{
+
+}

@@ -1,0 +1,53 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+#    bind:
+#      $emMain: '@em.entity_manager_main'
+
+  App\Bundles\InfrastructureBundle\:
+    resource: '../../../../*'
+    exclude:
+      - '../../../../Resources'
+      - '../../../../Infrastructure/Symfony'
+
+  App\Bundles\InfrastructureBundle\Application\:
+    resource: '../../../../Application/*'
+    exclude: '{Contract}'
+
+  App\Bundles\InfrastructureBundle\Domain\:
+    resource: '../../../../Domain/*'
+    exclude: '{Entity,Exception}'
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Kernel\DefaultResponseEventListener:
+    tags:
+      - {name: kernel.event_subscriber}
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Bus\QueryBus:
+    public: true
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Bus\CommandBus:
+    public: true
+
+  _instanceof:
+    App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\ConditionCases\ConditionTypeCaseInterface:
+      tags: [ 'app.infrastructure.doctrine.type_condition_cases' ]
+
+    App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\SortCases\SortCaseInterface:
+      tags: [ 'app.infrastructure.doctrine.sort_condition_cases' ]
+
+    App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\WhereCases\WhereCaseInterface:
+      tags: [ 'app.infrastructure.doctrine.where_condition_cases' ]
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\Context\ConditionTypeContext:
+    arguments:
+      - !tagged_iterator app.infrastructure.doctrine.type_condition_cases
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\Context\SortCaseContext:
+    arguments:
+      - !tagged_iterator app.infrastructure.doctrine.sort_condition_cases
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\Context\WhereContext:
+    arguments:
+      - !tagged_iterator app.infrastructure.doctrine.where_condition_cases
