@@ -77,7 +77,7 @@ final readonly class DefaultResponseEventListener implements EventSubscriberInte
     {
         $data = [];
         $meta = [];
-        $content = $response instanceof  JsonResponse ? json_decode($response->getContent(), true) : $response->getContent();
+        $content = $response instanceof  JsonResponse ? json_decode($response->getContent(), true) : $response?->getContent() ?? [];
         switch ($response) {
             case $response instanceOf AppJsonResponse:
                 $data = $content['data'];
