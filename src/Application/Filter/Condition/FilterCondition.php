@@ -6,14 +6,15 @@ namespace App\Bundles\InfrastructureBundle\Application\Filter\Condition;
 use App\Bundles\InfrastructureBundle\Application\Contract\Filter\FieldList\ContractEntityFieldListInterface;
 use App\Bundles\InfrastructureBundle\Application\Filter\Condition\Enum\ConditionTypeEnum as Type;
 use App\Bundles\InfrastructureBundle\Application\Filter\Condition\Enum\ConditionWhereType as WhereType;
+use JsonSerializable;
 
-class FilterCondition
+readonly class FilterCondition implements JsonSerializable
 {
     public function __construct(
-        protected readonly mixed $value,
-        protected readonly ContractEntityFieldListInterface $field,
-        protected readonly Type $type,
-        protected readonly WhereType $whereType
+        private mixed $value,
+        private ContractEntityFieldListInterface $field,
+        private Type $type,
+        private WhereType $whereType
     ) {
     }
 
@@ -35,5 +36,15 @@ class FilterCondition
     public function getField(): ContractEntityFieldListInterface
     {
         return $this->field;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'value' => $this->value,
+            'field' => $this->field->getFieldString(),
+            'type' => $this->type->toInt(),
+            'whereType' => $this->whereType->toInt(),
+        ];
     }
 }

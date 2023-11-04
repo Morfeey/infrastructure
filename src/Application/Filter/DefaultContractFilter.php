@@ -16,12 +16,12 @@ use App\Bundles\InfrastructureBundle\Infrastructure\Helper\ArrayCollection\Colle
 
 abstract class DefaultContractFilter implements FilterInterface, DefaultFilterInterface
 {
-    protected CollectionInterface $conditions;
-    protected CollectionInterface $sortConditionCollection;
-    protected CollectionInterface $linearFilterCollection;
-    protected ?int $limit;
-    protected ?int $offset;
-    protected bool $isDistinct = false;
+    private CollectionInterface $conditions;
+    private CollectionInterface $sortConditionCollection;
+    private CollectionInterface $linearFilterCollection;
+    private ?int $limit;
+    private ?int $offset;
+    private bool $isDistinct = false;
 
     public function __construct()
     {
@@ -76,7 +76,10 @@ abstract class DefaultContractFilter implements FilterInterface, DefaultFilterIn
 
     public function isEmpty(): bool
     {
-        return $this->conditions->isEmpty();
+        return
+            $this->conditions->isEmpty()
+            && ($this->limit === null || $this->offset === null)
+        ;
     }
 
     public function addSortBy(FieldList $field, SortType $sortType = SortType::ASC): static
@@ -138,5 +141,17 @@ abstract class DefaultContractFilter implements FilterInterface, DefaultFilterIn
     public function __clone(): void
     {
         $this->clear();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'conditions' => array_map(static fn (FilterCondition $condition) => $condition->jsonSerialize(), $this->conditions->toArray()),
+            'sortConditionCollection' => array_map(static fn (FilterSortCondition $condition) => $condition->jsonSerialize(), $this->sortConditionCollection->toArray()),
+            'linearFilterCollection' => array_map(static fn (self $filter) => $filter->jsonSerialize(), $this->linearFilterCollection->toArray()),
+            'limit' => $this->limit,
+            'offset' => $this->offset,
+            'isDistinct' => $this->isDistinct
+        ];
     }
 }

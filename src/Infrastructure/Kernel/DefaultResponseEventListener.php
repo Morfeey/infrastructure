@@ -36,7 +36,6 @@ final readonly class DefaultResponseEventListener implements EventSubscriberInte
 
     public function onResponse(ResponseEvent $event): void
     {
-
         if (!$event->getResponse()->isOk() || !($event->getResponse() instanceof JsonResponse)) {
             return;
         }
@@ -62,7 +61,11 @@ final readonly class DefaultResponseEventListener implements EventSubscriberInte
         $throwable = $event->getThrowable();
         $this->logger->critical($throwable);
         if (!($throwable instanceof DefaultExceptionInterface)) {
-            $throwable = new DefaultException($throwable->getMessage(), $throwable->getCode());
+            if ($throwable->getPrevious() && $throwable->getPrevious() instanceof DefaultExceptionInterface) {
+                $throwable = $throwable->getPrevious();
+            } else {
+                $throwable = new DefaultException($throwable->getMessage(), $throwable->getCode());
+            }
         }
 
         $response = $this->createJsonResponse($event->getResponse(), $throwable);

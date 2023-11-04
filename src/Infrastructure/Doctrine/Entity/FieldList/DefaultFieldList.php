@@ -34,6 +34,14 @@ abstract class DefaultFieldList implements ContractEntityFieldListInterface
         return $this->value;
     }
 
+    /**
+     * @return static[]
+    */
+    public function getList(): array
+    {
+        return [];
+    }
+
     public static function create(string $fieldString): static
     {
         return (new static())->setFieldString($fieldString);

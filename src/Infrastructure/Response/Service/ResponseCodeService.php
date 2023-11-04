@@ -25,11 +25,7 @@ class ResponseCodeService
 
     public function getByThrowable(Throwable $throwable): int
     {
-        if ($throwable->getCode() === 0) {
-            return self::CODE_BY_INTERFACE[DefaultExceptionInterface::class];
-        }
-
-        if ($throwable->getCode() !== 500 && !($throwable->getPrevious() instanceof DefaultExceptionInterface)) {
+        if ($throwable->getCode() !== 0) {
             return $throwable->getCode();
         }
 

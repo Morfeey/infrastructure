@@ -24,4 +24,9 @@ enum ConditionTypeEnum: int
 
     case LESS = 13;
     case LESS_THAN_OR_EQUAL_TO = 14;
+
+    public function toInt(): int
+    {
+        return $this->value;
+    }
 }

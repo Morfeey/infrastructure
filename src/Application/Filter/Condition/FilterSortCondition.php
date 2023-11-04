@@ -5,12 +5,13 @@ namespace App\Bundles\InfrastructureBundle\Application\Filter\Condition;
 
 use App\Bundles\InfrastructureBundle\Application\Contract\Filter\FieldList\ContractEntityFieldListInterface;
 use App\Bundles\InfrastructureBundle\Application\Filter\Condition\Enum\SortTypeEnum as SortType;
+use JsonSerializable;
 
-class FilterSortCondition
+readonly class FilterSortCondition implements JsonSerializable
 {
     public function __construct(
-        protected readonly ContractEntityFieldListInterface $field,
-        protected readonly SortType $sortType
+        private ContractEntityFieldListInterface $field,
+        private SortType $sortType
     ) {
     }
 
@@ -22,5 +23,13 @@ class FilterSortCondition
     public function getSortType(): SortType
     {
         return $this->sortType;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'field' => $this->field->getFieldString(),
+            'sortType' => $this->sortType->toInt()
+        ];
     }
 }

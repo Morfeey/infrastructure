@@ -6,4 +6,9 @@ enum ConditionWhereType: int
 {
     case AND = 1;
     case OR = 2;
+
+    public function toInt(): int
+    {
+        return $this->value;
+    }
 }
