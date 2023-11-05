@@ -25,7 +25,7 @@ class ResponseCodeService
 
     public function getByThrowable(Throwable $throwable): int
     {
-        if ($throwable->getCode() !== 0) {
+        if ($throwable->getCode() > 0 && $throwable->getCode() <= 599) {
             return $throwable->getCode();
         }
 
