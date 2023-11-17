@@ -51,3 +51,7 @@ services:
   App\Bundles\InfrastructureBundle\Infrastructure\Doctrine\Orm\Repository\Dependency\QueryBuilder\Context\WhereContext:
     arguments:
       - !tagged_iterator app.infrastructure.doctrine.where_condition_cases
+
+  App\Bundles\InfrastructureBundle\Infrastructure\Resolver\RequestDtoArgumentResolver:
+    arguments:
+      $serializer: '@serializer'
