@@ -10,9 +10,14 @@ use App\Bundles\InfrastructureBundle\Infrastructure\Helper\ArrayCollection\Colle
 interface AccessibleByFilterInterface
 {
     public function findByFilter(DefaultFilterInterface $filter): CollectionInterface;
+    public function findByFilterIterable(DefaultFilterInterface $filter): iterable;
     public function findOneByFilter(DefaultFilterInterface $filter): ?CustomEntityInterface;
     public function requireOneByFilter(DefaultFilterInterface $filter): CustomEntityInterface;
     public function findByFilterFieldList(DefaultFilterInterface $filter, ContractEntityFieldListInterface ...$fieldList): array;
+    /**
+     * @return iterable<array>
+     */
+    public function findByFilterFieldListIterable(DefaultFilterInterface $filter, ContractEntityFieldListInterface ...$fieldList): iterable;
     public function findByFilterField(DefaultFilterInterface $filter, ContractEntityFieldListInterface $field): array;
     public function findByFilterSingleField(DefaultFilterInterface $filter, ContractEntityFieldListInterface $field): mixed;
     public function findIdListByFilter(DefaultFilterInterface $filter): array;

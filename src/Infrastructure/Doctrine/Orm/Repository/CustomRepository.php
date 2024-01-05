@@ -78,6 +78,11 @@ class CustomRepository implements DoctrineRepositoryInterface
         return $this->findBy([]);
     }
 
+    public function findAllIterable(): iterable
+    {
+        return $this->entityManager->createQueryBuilder()->getQuery()->toIterable();
+    }
+
     /**
      * @deprecated Не стоит пользоваться данным методом
      */
@@ -133,7 +138,20 @@ class CustomRepository implements DoctrineRepositoryInterface
             return $collection;
         }
 
-        return $collection->setItems($this->buildDefaultSelectQueryBuilderByFilter($filter)->getQuery()->getResult());
+        foreach ($this->findByFilterIterable($filter) as $item) {
+            $collection->add($item);
+        }
+
+        return $collection;
+    }
+
+    public function findByFilterIterable(DefaultFilterInterface $filter): iterable
+    {
+        if ($filter->isEmpty()) {
+            yield;
+        }
+
+        return $this->buildDefaultSelectQueryBuilderByFilter($filter)->getQuery()->toIterable();
     }
 
     public function findOneByFilter(DefaultFilterInterface $filter): ?CustomEntityInterface
@@ -155,6 +173,20 @@ class CustomRepository implements DoctrineRepositoryInterface
         )
             ->getQuery()
             ->getArrayResult();
+    }
+
+    /**
+     * @return iterable<array>
+    */
+    public function findByFilterFieldListIterable(DefaultFilterInterface $filter, ContractEntityFieldListInterface ...$fieldList): iterable
+    {
+        return $this->buildQuery(
+            $this->buildDefaultSelectQueryBuilderByFilter($filter, ...$fieldList),
+            $filter
+        )
+            ->getQuery()
+            ->toIterable([], AbstractQuery::HYDRATE_ARRAY)
+        ;
     }
 
     public function findByFilterField(DefaultFilterInterface $filter, ContractEntityFieldListInterface $field): array

@@ -14,6 +14,7 @@ interface DefaultAccessibleInterface
 
     public function findByIdentifier(mixed $identification): ?DomainEntityInterface;
     public function findAll(): CollectionInterface;
+    public function findAllIterable(): iterable;
 
     public function save(DomainEntityInterface $entity): static;
     public function saveCollection(CollectionInterface $entityCollection): static;
