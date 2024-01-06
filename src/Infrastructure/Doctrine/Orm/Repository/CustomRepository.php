@@ -80,7 +80,13 @@ class CustomRepository implements DoctrineRepositoryInterface
 
     public function findAllIterable(): iterable
     {
-        return $this->entityManager->createQueryBuilder()->getQuery()->toIterable();
+        return $this->entityManager
+            ->createQueryBuilder()
+            ->select($this->getEntityPrefix())
+            ->from($this->entityClass, $this->getEntityPrefix())
+            ->getQuery()
+            ->toIterable()
+        ;
     }
 
     /**
@@ -151,7 +157,10 @@ class CustomRepository implements DoctrineRepositoryInterface
             yield;
         }
 
-        return $this->buildDefaultSelectQueryBuilderByFilter($filter)->getQuery()->toIterable();
+        $query = $this->buildDefaultSelectQueryBuilderByFilter($filter)->getQuery();
+        foreach ($query->toIterable() as $item) {
+            yield $item;
+        }
     }
 
     public function findOneByFilter(DefaultFilterInterface $filter): ?CustomEntityInterface
