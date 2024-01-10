@@ -80,13 +80,17 @@ class CustomRepository implements DoctrineRepositoryInterface
 
     public function findAllIterable(): iterable
     {
-        return $this->entityManager
+        $query = $this->entityManager
             ->createQueryBuilder()
             ->select($this->getEntityPrefix())
             ->from($this->entityClass, $this->getEntityPrefix())
             ->getQuery()
-            ->toIterable()
         ;
+
+        $iterator = $query->toIterable();
+        foreach ($iterator as $item) {
+            yield $item;
+        }
     }
 
     /**
