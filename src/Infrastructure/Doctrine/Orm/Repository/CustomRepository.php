@@ -232,9 +232,9 @@ class CustomRepository implements DoctrineRepositoryInterface
         $qb = $this->buildDefaultSelectQueryBuilderByFilter($filter, ...$fieldList)
             ->update($this->entityClass, $this->getEntityPrefix());
 
-        foreach ($fieldList as $field) {
+        foreach ($fieldList as $index => $field) {
             $parameter = "{$this->getEntityPrefix()}.{$field->getFieldString()}";
-            $placeholder = "{$this->getEntityPrefix()}_{$field->getFieldString()}";
+            $placeholder = "{$this->getEntityPrefix()}_{$index}_{$field->getFieldString()}";
             $qb->set($parameter, ':' . $placeholder)->setParameter($placeholder, $field->getValue());
         }
 
